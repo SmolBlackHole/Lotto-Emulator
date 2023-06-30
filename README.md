@@ -41,7 +41,6 @@ Das Programm soll zeigen, wie unwahrscheinlich es ist, bei solch einem Glückssp
 
 ### To-Do
 * Möglichkeit auch mehr als 10 einzelne Runden bei der manuellen Ziehung auszugeben.
-* Implementierung eines Logs, sofern gewünscht.
 
 #
 ### Code: Funktionsweise
