@@ -45,7 +45,7 @@ public class lotto {
                         System.out.println(colorize("Zuerst Tipps eingeben!", "rot"));
                         System.out.print(colorize("Fertig, zurück zum Menü", "gold"));
                         scanner.nextLine();
-                        scanner.nextLine();
+                        scanner.nextLine(); // zweimal um unverbrauchtes Zeichen zu konsumieren
                     }
                     break;
                 case 2: // Manuelle Ziehung
@@ -55,7 +55,7 @@ public class lotto {
                         System.out.println(colorize("Zuerst Tipps eingeben!", "rot"));
                         System.out.print(colorize("Fertig, zurück zum Menü", "gold"));
                         scanner.nextLine();
-                        scanner.nextLine();
+                        scanner.nextLine(); // zweimal um unverbrauchtes Zeichen zu konsumieren
                     }
                     break;
                 case 3: // Beenden
@@ -207,14 +207,14 @@ public class lotto {
 
             if (scanner.hasNextInt()) {
                 int tippIndex = scanner.nextInt();
-                scanner.nextLine(); // Verwerfen Sie den Rest der Zeile nach der Ganzzahleingabe
+                scanner.nextLine(); // Verwerfe den Rest der Zeile nach der Ganzzahleingabe
 
                 if (tippIndex >= 1 && tippIndex <= 6) {
-                    System.out.print(colorize("Neuer Tipp-Wert für " + tippIndex + " eingeben: ", "hellgruen"));
+                    System.out.print(colorize("Neuen Tipp-Wert für " + tippIndex + " eingeben: ", "hellgruen"));
 
                     if (scanner.hasNextInt()) {
                         int newTippValue = scanner.nextInt();
-                        scanner.nextLine(); // Verwerfen Sie den Rest der Zeile nach der Ganzzahleingabe
+                        scanner.nextLine(); // Konsumieret restliche Zeichen nach Ganzzahleingabe
 
                         if (newTippValue >= 1 && newTippValue <= 49 && !contains(tipps, newTippValue)) {
                             // Überprüfung, ob der neue Wert genauso groß wie der alte Wert ist
@@ -245,7 +245,7 @@ public class lotto {
                 clearConsole();
                 printTitle("Lotto-Spiel", "gold");
                 System.out.println(colorize("Ungültige Eingabe, bitte eine Zahl eingeben.", "rot"));
-                scanner.nextLine(); // Verwerfen Sie den Rest der Zeile nach der ungültigen Eingabe
+                scanner.nextLine();
             }
         }
         return tipps;
@@ -399,10 +399,10 @@ public class lotto {
         }
 
         System.out.println(colorize(
-                "Insgesamt " + totalMatches + " Treffer in " + rounds + " Runden. (Treffer ohne 0, manchmal buggy)",
+                "Insgesamt " + totalMatches + " Treffer in " + rounds + " Runden. (Treffer ohne 0, zeigt wie oft, auch in einer Ziehung, zahlen getroffen wurden)",
                 "gold"));
 
-        System.out.print(colorize("Drücke Enter, um zum Hauptmenü zurückzukehren...", "gruen"));
+        System.out.print(colorize("Drücke Enter, um zum Hauptmenü zurückzukehren", "gruen"));
         scanner.nextLine();
     }
 
@@ -427,6 +427,7 @@ public class lotto {
         }
 
         System.out.println(colorize("6 Treffer nach " + formatNumber(attempts) + " Ziehungen", "gold"));
+        System.out.println(colorize("Preis für alle Tickets: " + formatNumber(attempts * 1.20) + " Euro", "gold"));
         System.out.println(colorize("===========", "gold"));
         System.out.println(colorize("Treffer-Übersicht: ", "gruen"));
 
@@ -468,14 +469,14 @@ public class lotto {
                     colorize(i + " Richtige: " + countString + spaces + " | " + probabilityString + "%", color));
         }
 
-        System.out.println(colorize("Drücke Enter, um fortzufahren", "blau"));
+        System.out.print(colorize("Drücke Enter, um fortzufahren", "blau"));
         scanner.nextLine();
         scanner.nextLine();
     }
 
-    private static String formatNumber(int number) {
+    private static String formatNumber(double d) {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0");
-        return decimalFormat.format(number);
+        return decimalFormat.format(d);
     }
 
     // Zeigt Treffer-Übersicht in verschiedenen Farben an
@@ -520,18 +521,16 @@ public class lotto {
     }
 
     private static void clearConsole() {
-        // Löscht den Konsolenbildschirm
-        System.out.print("\033[H\033[2J");
+        // Löscht Konsolenausgabe (quasi ein "cls") (funktioniert nicht immer)
+        System.out.print("\033[H\033[2J"); // ANSI escape code https://stackoverflow.com/questions/55672661/what-this-character-sequence-033h-033j-does-in-c
+
         System.out.flush();
     }
 
     private static String colorize(String text, String color) {
-        // Färbt den Text in der angegebenen Farbe ein und gibt den formatierten Text
-        // zurück
         String ansiReset = "\u001B[0m";
         String ansiColor = "";
 
-        // Farben basierend auf dem übergebenen Farbnamen auswählen
         switch (color) {
             case "rot":
                 ansiColor = "\u001B[31m";
@@ -559,16 +558,15 @@ public class lotto {
                 break;
         }
 
-        // Umlaute im Text ersetzen, um sie korrekt darzustellen
         String formattedText = text
                 .replaceAll("ä", "\u00E4")
                 .replaceAll("ü", "\u00FC")
                 .replaceAll("ö", "\u00F6")
                 .replaceAll("Ä", "\u00C4")
                 .replaceAll("Ü", "\u00DC")
-                .replaceAll("Ö", "\u00D6");
+                .replaceAll("Ö", "\u00D6")
+                .replaceAll("ß", "\u00DF");
 
-        // Den formatierten Text in der angegebenen Farbe zurückgeben
         if (!ansiColor.isEmpty()) {
             return ansiColor + formattedText + ansiReset;
         } else {
